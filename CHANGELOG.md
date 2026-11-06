@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1 (2026-11-06)
+
+- A thin line under the graph has two links, "Sponsor" (GitHub Sponsors) and "More free viewers". The new setting `graphvizPreview.showSupportLinks` (default `true`) hides it, and so does the "Hide" link next to them. The Markdown preview never shows it. There is no popup, and nothing is sent anywhere.
+- New commands "Graphviz: Support the developer" and "Graphviz: More free viewers". The second one lists the other Zovo extensions and installs only the one you pick. Ones that are not on the Marketplace yet open their GitHub page.
+- The listing gets a Sponsor button. The README has a short Support section and lists all Zovo extensions.
+
 ## 0.1.0
 
 - First release.

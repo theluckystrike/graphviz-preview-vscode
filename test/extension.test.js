@@ -149,3 +149,39 @@ test('extension host: preview, click to line, diagnostics, Markdown blocks, expo
   panel.dispose();
   assert.equal(f.diag.has(doc.uri.toString()), false);
 });
+
+// ---------- support links (Sponsor, More free viewers) ----------
+test('support: package.json has the sponsor field, the two commands and the setting', () => {
+  const pkg = require('../package.json');
+  const support = require('../src/support');
+  assert.equal(pkg.sponsor.url, 'https://github.com/sponsors/theluckystrike');
+  assert.equal(pkg.sponsor.url, support.sponsorUrl());
+  const ids = pkg.contributes.commands.map(c => c.command);
+  assert.ok(ids.includes('graphvizPreview.supportDeveloper') && ids.includes('graphvizPreview.moreViewers'));
+  const props = Object.assign({}, ...[].concat(pkg.contributes.configuration).map(c => c.properties));
+  assert.equal(props['graphvizPreview.showSupportLinks'].default, true);
+  assert.ok(support.otherProducts('zovo.graphviz-preview').every(x => x.id !== 'zovo.graphviz-preview'));
+});
+
+test('support: the preview footer shows by default and graphvizPreview.showSupportLinks=false hides it', async t => {
+  for (const [value, shown] of [[undefined, true], [false, false]]) {
+    const f = makeVscode();
+    f.vscode.workspace.getConfiguration = () => ({ get: (k, d) => (k === 'showSupportLinks' && value !== undefined ? value : k === 'updateDelayMs' ? 0 : d) });
+    const orig = Module._load;
+    Module._load = function (req, ...rest) { return req === 'vscode' ? f.vscode : orig.call(this, req, ...rest); };
+    const p = require.resolve('../dist/extension.js');
+    delete require.cache[p];
+    let ext;
+    try { ext = require(p); } finally { Module._load = orig; }
+    const context = { subscriptions: [], extensionUri: f.vscode.Uri.file(path.join(__dirname, '..')), globalState: { get() {}, update: async () => {} } };
+    ext.activate(context);
+    assert.ok(f.commands.has('graphvizPreview.supportDeveloper') && f.commands.has('graphvizPreview.moreViewers'));
+    const doc = f.addDoc('/w/s.dot', 'digraph { a -> b }', 'dot');
+    await f.commands.get('graphvizPreview.showPreview')(doc.uri);
+    const html = f.panels[0].webview.html;
+    assert.equal(/id="zovo-support"/.test(html), shown, String(value));
+    assert.equal(html.includes('command:graphvizPreview.moreViewers'), shown);
+    assert.deepEqual(f.panels[0].webview.options.enableCommandUris, ['graphvizPreview.supportDeveloper', 'graphvizPreview.moreViewers', 'workbench.action.openSettings']);
+    context.subscriptions.forEach(s => s.dispose());
+  }
+});

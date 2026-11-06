@@ -12,3 +12,4 @@ images/*.html
 package-lock.json
 .e2e/**
 images/**
+.github/**

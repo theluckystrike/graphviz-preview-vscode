@@ -1,6 +1,8 @@
 'use strict';
-// Builds the preview webview page. Strict CSP: no remote sources, one nonce script, no inline styles.
+// Builds the preview webview page. Strict CSP: no remote sources, one nonce script, no inline style
+// attributes (the support footer has one nonce style block).
 const crypto = require('crypto');
+const { footerHtml, FOOTER_CSS } = require('./support');
 
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -8,7 +10,7 @@ function csp(cspSource, nonce) {
   return [
     "default-src 'none'",
     `img-src ${cspSource} blob: data:`,
-    `style-src ${cspSource}`,
+    `style-src ${cspSource} 'nonce-${nonce}'`,
     `font-src ${cspSource}`,
     `script-src 'nonce-${nonce}'`,
     "connect-src 'none'",
@@ -19,9 +21,14 @@ function csp(cspSource, nonce) {
   ].join('; ');
 }
 
-/** opts: { cspSource, scriptUri, styleUri, title, engine, theme } */
+/**
+ * opts: { cspSource, scriptUri, styleUri, title, engine, theme, showSupportLinks }
+ * showSupportLinks false hides the small Sponsor and More free viewers line (setting graphvizPreview.showSupportLinks).
+ */
 function buildHtml(opts) {
   const nonce = opts.nonce || crypto.randomBytes(16).toString('base64');
+  // Its own thin row under the graph, so it never covers the graph or the toolbar.
+  const footer = footerHtml('graphvizPreview', opts.showSupportLinks !== false, '');
   const engines = ['auto', 'dot', 'neato', 'fdp', 'sfdp', 'circo', 'twopi'];
   const options = engines.map(e => `<option value="${e}"${e === opts.engine ? ' selected' : ''}>${e === 'auto' ? 'auto (file or dot)' : e}</option>`).join('');
   return `<!DOCTYPE html>
@@ -31,6 +38,7 @@ function buildHtml(opts) {
 <meta http-equiv="Content-Security-Policy" content="${esc(csp(opts.cspSource, nonce))}">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="${esc(opts.styleUri)}">
+${footer ? `<style nonce="${esc(nonce)}">${FOOTER_CSS}\n.zovo-support{flex:0 0 auto;text-align:right;border-top:1px solid var(--vscode-panel-border,rgba(128,128,128,.35))}</style>` : ''}
 <title>${esc(opts.title || 'Graphviz Preview')}</title>
 </head>
 <body data-theme="${esc(opts.theme || 'auto')}">
@@ -58,6 +66,7 @@ function buildHtml(opts) {
     <div id="stage"></div>
     <div id="empty">Rendering…</div>
   </div>
+  ${footer}
 </div>
 <script nonce="${nonce}" src="${esc(opts.scriptUri)}"></script>
 </body>

@@ -2,7 +2,7 @@
   "name": "graphviz-preview",
   "displayName": "Graphviz Preview & DOT Viewer",
   "description": "Graphviz preview for .dot and .gv files and dot blocks in Markdown, with live updates, error lines, pan, zoom and SVG or PNG export. Offline.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "zovo",
   "license": "MIT",
   "icon": "icon.png",
@@ -115,6 +115,16 @@
         "command": "graphvizPreview.openWalkthrough",
         "title": "Get Started",
         "category": "Graphviz"
+      },
+      {
+        "command": "graphvizPreview.supportDeveloper",
+        "title": "Support the developer",
+        "category": "Graphviz"
+      },
+      {
+        "command": "graphvizPreview.moreViewers",
+        "title": "More free viewers",
+        "category": "Graphviz"
       }
     ],
     "keybindings": [
@@ -169,7 +179,15 @@
       "properties": {
         "graphvizPreview.defaultEngine": {
           "type": "string",
-          "enum": ["auto", "dot", "neato", "fdp", "sfdp", "circo", "twopi"],
+          "enum": [
+            "auto",
+            "dot",
+            "neato",
+            "fdp",
+            "sfdp",
+            "circo",
+            "twopi"
+          ],
           "default": "auto",
           "description": "Layout engine for new previews. \"auto\" uses the layout= attribute of the graph, or dot. You can change it per preview from the toolbar."
         },
@@ -195,7 +213,12 @@
         },
         "graphvizPreview.theme": {
           "type": "string",
-          "enum": ["auto", "light", "dark", "original"],
+          "enum": [
+            "auto",
+            "light",
+            "dark",
+            "original"
+          ],
           "enumDescriptions": [
             "Follow the VS Code theme: in dark themes, default black lines and text use the editor colors.",
             "Always black on white, like Graphviz.",
@@ -220,6 +243,11 @@
           "type": "boolean",
           "default": true,
           "description": "Ask one time for a Marketplace rating after you have used Graphviz Preview for a few days. You can answer \"Later\" or \"Don't ask again\". Nothing is sent anywhere."
+        },
+        "graphvizPreview.showSupportLinks": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the small Sponsor and More free viewers links at the bottom of the Graphviz preview. Not shown in the Markdown preview. The change shows in previews you open next. Nothing is sent anywhere."
         }
       }
     },
@@ -233,27 +261,39 @@
             "id": "open",
             "title": "Open the preview",
             "description": "Open a .dot or .gv file and click the preview icon in the editor title, or press Cmd+K V (Ctrl+K V).\n[Find a .dot file](command:workbench.action.quickOpen?%5B%22.dot%22%5D)",
-            "media": { "markdown": "walkthrough/open.md" },
-            "completionEvents": ["onCommand:graphvizPreview.showPreviewToSide"]
+            "media": {
+              "markdown": "walkthrough/open.md"
+            },
+            "completionEvents": [
+              "onCommand:graphvizPreview.showPreviewToSide"
+            ]
           },
           {
             "id": "navigate",
             "title": "Pan, zoom, find and jump",
             "description": "Drag to pan, Cmd or Ctrl plus the mouse wheel to zoom. Type in Find node to light up matches. Click a node to put the cursor on its line.",
-            "media": { "markdown": "walkthrough/navigate.md" }
+            "media": {
+              "markdown": "walkthrough/navigate.md"
+            }
           },
           {
             "id": "markdown",
             "title": "Graphs in Markdown",
             "description": "Write a fenced block with the language dot or graphviz. The built-in Markdown preview draws it, and the side preview can show any block of the file.",
-            "media": { "markdown": "walkthrough/markdown.md" }
+            "media": {
+              "markdown": "walkthrough/markdown.md"
+            }
           },
           {
             "id": "settings",
             "title": "Engine, colors and limits",
             "description": "Pick the default layout engine, the color mode and the time limit for big graphs.\n[Open settings](command:workbench.action.openSettings?%5B%22graphvizPreview%22%5D)",
-            "media": { "markdown": "walkthrough/settings.md" },
-            "completionEvents": ["onCommand:workbench.action.openSettings"]
+            "media": {
+              "markdown": "walkthrough/settings.md"
+            },
+            "completionEvents": [
+              "onCommand:workbench.action.openSettings"
+            ]
           }
         ]
       }
@@ -276,5 +316,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/theluckystrike/graphviz-preview-vscode"
+  },
+  "sponsor": {
+    "url": "https://github.com/sponsors/theluckystrike"
   }
 }

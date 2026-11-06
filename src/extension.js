@@ -8,6 +8,7 @@ const { sanitizeSvg, svgStats } = require('./core/svg');
 const { validateWebviewMessage, renderMessage, problemMessage, pngBytes, ENGINES } = require('./core/protocol');
 const { createMarkdownPlugin } = require('./markdown');
 const { createRatingPrompt } = require('./rate');
+const { registerSupport, commandUris, showLinks } = require('./support');
 
 const SECTION = 'graphvizPreview';
 const VIEW_TYPE = 'graphvizPreview.preview';
@@ -40,10 +41,12 @@ class Preview {
     this.fileName = path.basename(doc.uri.path);
     const wv = panel.webview;
     const media = vscode.Uri.joinPath(manager.context.extensionUri, 'media');
-    wv.options = { enableScripts: true, localResourceRoots: [media] };
+    // Command links are limited to the two support commands and the settings page (footer "Hide" link).
+    wv.options = { enableScripts: true, localResourceRoots: [media], enableCommandUris: commandUris('graphvizPreview') };
     wv.html = buildHtml({
       cspSource: wv.cspSource, scriptUri: wv.asWebviewUri(vscode.Uri.joinPath(media, 'preview.js')).toString(),
       styleUri: wv.asWebviewUri(vscode.Uri.joinPath(media, 'preview.css')).toString(), title: this.fileName, engine: this.engine, theme: settings().theme,
+      showSupportLinks: showLinks(vscode, SECTION),
     });
     panel.iconPath = vscode.Uri.joinPath(manager.context.extensionUri, 'media', 'preview-icon.svg');
     this.subs = [
@@ -214,7 +217,7 @@ class Manager {
     return Promise.resolve(vscode.workspace.openTextDocument(uri)).then(doc => {
       const existing = this.previews.get(doc.uri.toString());
       if (existing) { existing.panel.reveal(column, true); return existing; }
-      const panel = vscode.window.createWebviewPanel(VIEW_TYPE, 'Preview ' + path.basename(doc.uri.path), { viewColumn: column, preserveFocus: true }, { enableScripts: true, retainContextWhenHidden: false, enableFindWidget: false });
+      const panel = vscode.window.createWebviewPanel(VIEW_TYPE, 'Preview ' + path.basename(doc.uri.path), { viewColumn: column, preserveFocus: true }, { enableScripts: true, retainContextWhenHidden: false, enableFindWidget: false, enableCommandUris: commandUris('graphvizPreview') });
       const p = new Preview(this, doc, panel);
       this.previews.set(p.key, p);
       const ed = vscode.window.activeTextEditor;
@@ -234,6 +237,7 @@ function targetUri(arg) {
 function activate(context) {
   const manager = new Manager(context);
   context.subscriptions.push({ dispose: () => manager.dispose() });
+  registerSupport({ vscode, context, prefix: SECTION, selfId: 'zovo.graphviz-preview' });
   rating = createRatingPrompt({ vscode, context, extensionId: 'zovo.graphviz-preview', section: SECTION,
     message: n => `Graphviz Preview has rendered ${n} graphs for you. A rating helps other people find it.` });
 
