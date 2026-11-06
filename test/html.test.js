@@ -35,7 +35,7 @@ test('extension code makes no network calls and has no telemetry', () => {
 
 test('manifest: id, engine, keywords, languages and Markdown plugin', () => {
   const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
-  assert.equal(`${pkg.publisher}.${pkg.name}`, 'zovo.graphviz-preview');
+  assert.equal(`${pkg.publisher}.${pkg.name}`, 'zovo.zovo-graphviz-preview');
   assert.equal(pkg.version, '0.1.1');
   assert.equal(pkg.engines.vscode, '^1.90.0');
   assert.ok(pkg.displayName.startsWith('Graphviz Preview') && pkg.displayName.length <= 45);

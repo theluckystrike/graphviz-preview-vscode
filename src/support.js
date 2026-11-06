@@ -93,7 +93,7 @@ const QUEUED = [
     "https://github.com/theluckystrike/video-preview-vscode"
   ],
   [
-    "zovo.graphviz-preview",
+    "zovo.zovo-graphviz-preview",
     "Graphviz Preview & DOT Viewer",
     "shows a live preview of DOT files and exports SVG or PNG.",
     "https://github.com/theluckystrike/graphviz-preview-vscode"

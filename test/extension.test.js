@@ -160,7 +160,7 @@ test('support: package.json has the sponsor field, the two commands and the sett
   assert.ok(ids.includes('graphvizPreview.supportDeveloper') && ids.includes('graphvizPreview.moreViewers'));
   const props = Object.assign({}, ...[].concat(pkg.contributes.configuration).map(c => c.properties));
   assert.equal(props['graphvizPreview.showSupportLinks'].default, true);
-  assert.ok(support.otherProducts('zovo.graphviz-preview').every(x => x.id !== 'zovo.graphviz-preview'));
+  assert.ok(support.otherProducts('zovo.zovo-graphviz-preview').every(x => x.id !== 'zovo.zovo-graphviz-preview'));
 });
 
 test('support: the preview footer shows by default and graphvizPreview.showSupportLinks=false hides it', async t => {

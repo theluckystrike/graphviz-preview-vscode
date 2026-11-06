@@ -1,5 +1,5 @@
 {
-  "name": "graphviz-preview",
+  "name": "zovo-graphviz-preview",
   "displayName": "Graphviz Preview & DOT Viewer",
   "description": "Graphviz preview for .dot and .gv files and dot blocks in Markdown, with live updates, error lines, pan, zoom and SVG or PNG export. Offline.",
   "version": "0.1.1",

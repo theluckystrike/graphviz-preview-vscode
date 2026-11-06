@@ -237,8 +237,8 @@ function targetUri(arg) {
 function activate(context) {
   const manager = new Manager(context);
   context.subscriptions.push({ dispose: () => manager.dispose() });
-  registerSupport({ vscode, context, prefix: SECTION, selfId: 'zovo.graphviz-preview' });
-  rating = createRatingPrompt({ vscode, context, extensionId: 'zovo.graphviz-preview', section: SECTION,
+  registerSupport({ vscode, context, prefix: SECTION, selfId: 'zovo.zovo-graphviz-preview' });
+  rating = createRatingPrompt({ vscode, context, extensionId: 'zovo.zovo-graphviz-preview', section: SECTION,
     message: n => `Graphviz Preview has rendered ${n} graphs for you. A rating helps other people find it.` });
 
   const openCmd = side => async arg => {
@@ -249,7 +249,7 @@ function activate(context) {
   context.subscriptions.push(
     vscode.commands.registerCommand('graphvizPreview.showPreviewToSide', openCmd(true)),
     vscode.commands.registerCommand('graphvizPreview.showPreview', openCmd(false)),
-    vscode.commands.registerCommand('graphvizPreview.openWalkthrough', () => vscode.commands.executeCommand('workbench.action.openWalkthrough', 'zovo.graphviz-preview#graphvizPreview.start', false)),
+    vscode.commands.registerCommand('graphvizPreview.openWalkthrough', () => vscode.commands.executeCommand('workbench.action.openWalkthrough', 'zovo.zovo-graphviz-preview#graphvizPreview.start', false)),
     vscode.workspace.onDidChangeTextDocument(e => {
       const p = manager.previews.get(e.document.uri.toString());
       if (p && e.contentChanges.length) p.schedule(settings().delay);
