@@ -1,0 +1,25 @@
+{
+  "scopeName": "source.dot",
+  "name": "Graphviz (DOT)",
+  "patterns": [
+    { "include": "#comments" },
+    { "match": "(?i)\\b(strict|digraph|graph|subgraph|node|edge)\\b", "name": "keyword.other.dot" },
+    { "match": "--|->", "name": "keyword.operator.edge.dot" },
+    { "match": "\\b([A-Za-z_][A-Za-z0-9_]*)\\s*(?==)", "captures": { "1": { "name": "entity.other.attribute-name.dot" } } },
+    { "include": "#strings" },
+    { "begin": "<", "end": ">", "name": "string.unquoted.html.dot", "patterns": [{ "include": "#html" }] },
+    { "match": "-?(\\.[0-9]+|[0-9]+(\\.[0-9]*)?)", "name": "constant.numeric.dot" },
+    { "match": "[{}\\[\\];,=:]", "name": "punctuation.separator.dot" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        { "begin": "/\\*", "end": "\\*/", "name": "comment.block.dot" },
+        { "match": "//.*$", "name": "comment.line.double-slash.dot" },
+        { "match": "^\\s*#.*$", "name": "comment.line.number-sign.dot" }
+      ]
+    },
+    "strings": { "begin": "\"", "end": "\"", "name": "string.quoted.double.dot", "patterns": [{ "match": "\\\\.", "name": "constant.character.escape.dot" }] },
+    "html": { "patterns": [{ "begin": "<", "end": ">", "patterns": [{ "include": "#html" }] }] }
+  }
+}

@@ -1,0 +1,48 @@
+:root { --gv-fg: var(--vscode-editor-foreground); --gv-bg: var(--vscode-editor-background); --gv-accent: var(--vscode-focusBorder, #0078d4); --gv-hit: var(--vscode-editor-findMatchHighlightBackground, rgba(234, 92, 0, 0.33)); }
+html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; }
+body { background: var(--gv-bg); color: var(--gv-fg); font-family: var(--vscode-font-family); font-size: var(--vscode-font-size, 13px); }
+#app { display: flex; flex-direction: column; height: 100%; }
+#toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 6px 10px; border-bottom: 1px solid var(--vscode-panel-border, rgba(128,128,128,.35)); background: var(--vscode-editorWidget-background, var(--gv-bg)); flex: 0 0 auto; }
+.grp { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; flex: 0 0 auto; }
+select, input, button { font: inherit; color: var(--vscode-input-foreground, var(--gv-fg)); background: var(--vscode-input-background, transparent); border: 1px solid var(--vscode-input-border, var(--vscode-panel-border, rgba(128,128,128,.5))); border-radius: 2px; padding: 2px 6px; }
+select { background: var(--vscode-dropdown-background, var(--vscode-input-background)); color: var(--vscode-dropdown-foreground, var(--gv-fg)); }
+button { cursor: pointer; background: var(--vscode-button-secondaryBackground, transparent); color: var(--vscode-button-secondaryForeground, var(--gv-fg)); min-width: 26px; }
+button:hover { background: var(--vscode-button-secondaryHoverBackground, rgba(128,128,128,.2)); }
+:focus-visible { outline: 1px solid var(--gv-accent); outline-offset: 1px; }
+#search { width: 150px; }
+#hits, #zoomLabel, #status { opacity: .8; font-variant-numeric: tabular-nums; }
+#zoomLabel { min-width: 42px; text-align: center; }
+#status { margin-left: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.hidden { display: none !important; }
+#problem { flex: 0 0 auto; padding: 6px 10px; background: var(--vscode-inputValidation-errorBackground, rgba(190, 17, 0, .18)); border-bottom: 1px solid var(--vscode-inputValidation-errorBorder, #be1100); max-height: 30%; overflow: auto; }
+#problem.warn { background: var(--vscode-inputValidation-warningBackground, rgba(185, 137, 0, .15)); border-bottom-color: var(--vscode-inputValidation-warningBorder, #b89500); }
+#problem .problem { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 2px 0; color: inherit; font-family: var(--vscode-editor-font-family, monospace); white-space: pre-wrap; }
+#problem button.problem:hover { text-decoration: underline; }
+#problem .problem.error::before { content: '✖ '; color: var(--vscode-errorForeground, #f14c4c); }
+#problem .problem.warning::before { content: '⚠ '; color: var(--vscode-editorWarning-foreground, #cca700); }
+#viewport { position: relative; flex: 1 1 auto; overflow: hidden; cursor: grab; outline: none; touch-action: none; }
+#viewport.panning { cursor: grabbing; }
+#stage { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+#stage svg { display: block; overflow: visible; }
+#empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: .7; padding: 20px; text-align: center; white-space: pre-wrap; }
+body.stale #stage { opacity: .45; filter: grayscale(.6); }
+#stage g.node, #stage g.edge, #stage g.cluster { cursor: pointer; }
+#stage g.node:hover > :is(ellipse, polygon, path, rect) { stroke-width: 2.5px; }
+
+/* Dark-theme aware colors: in a dark or high-contrast theme, Graphviz's default black lines and text and
+   its white page take the editor colors. Colors set in the graph itself are kept. */
+body.vscode-dark:not([data-theme="light"]):not([data-theme="original"]) #stage, body.vscode-high-contrast:not(.vscode-high-contrast-light):not([data-theme="light"]):not([data-theme="original"]) #stage, body[data-theme="dark"] #stage { --gv-ink: var(--gv-fg); --gv-page: transparent; --gv-paper: var(--gv-bg); }
+body.vscode-light:not([data-theme="dark"]) #stage, body.vscode-high-contrast-light:not([data-theme="dark"]) #stage, body[data-theme="light"] #stage, body[data-theme="original"] #stage { --gv-ink: #000; --gv-page: #fff; --gv-paper: #fff; }
+#stage svg [stroke="black"], #stage svg [stroke="#000000"] { stroke: var(--gv-ink); }
+#stage svg [fill="black"], #stage svg [fill="#000000"] { fill: var(--gv-ink); }
+#stage svg text:not([fill]) { fill: var(--gv-ink); }
+#stage svg > g.graph > polygon[fill="white"]:first-of-type, #stage svg > g.graph > polygon[fill="#ffffff"]:first-of-type { fill: var(--gv-page); }
+#stage svg g.node [fill="white"], #stage svg g.node [fill="#ffffff"], #stage svg g.cluster [fill="white"] { fill: var(--gv-paper); }
+body[data-theme="original"] #stage { background: #fff; }
+
+/* search and selection */
+#stage.searching g.node:not(.gv-match), #stage.searching g.edge { opacity: .28; }
+#stage g.gv-match > :is(ellipse, polygon, path, rect) { stroke: var(--gv-accent); stroke-width: 2.5px; }
+#stage g.gv-current > :is(ellipse, polygon, path, rect) { stroke-width: 4px; }
+#stage g.gv-current > :is(ellipse, polygon, rect) { fill: var(--gv-hit); }
+#stage g.gv-selected > :is(ellipse, polygon, path, rect) { stroke: var(--vscode-editorCursor-foreground, var(--gv-accent)); stroke-width: 3px; }

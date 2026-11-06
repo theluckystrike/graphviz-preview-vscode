@@ -1,0 +1,280 @@
+{
+  "name": "graphviz-preview",
+  "displayName": "Graphviz Preview & DOT Viewer",
+  "description": "Graphviz preview for .dot and .gv files and dot blocks in Markdown, with live updates, error lines, pan, zoom and SVG or PNG export. Offline.",
+  "version": "0.1.0",
+  "publisher": "zovo",
+  "license": "MIT",
+  "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#14213D",
+    "theme": "dark"
+  },
+  "engines": {
+    "vscode": "^1.90.0",
+    "node": ">=18"
+  },
+  "categories": [
+    "Visualization",
+    "Programming Languages",
+    "Other"
+  ],
+  "keywords": [
+    "graphviz",
+    "graphviz preview",
+    "dot",
+    "dot preview",
+    "dot viewer",
+    "gv",
+    "dot language",
+    "graph",
+    "diagram",
+    "digraph",
+    "viz.js",
+    "svg",
+    "png",
+    "export",
+    "markdown",
+    "markdown preview",
+    "neato",
+    "fdp",
+    "sfdp",
+    "circo",
+    "twopi",
+    "flowchart",
+    "state machine",
+    "dependency graph",
+    "call graph",
+    "architecture diagram",
+    "graph visualization",
+    "dark mode",
+    "live preview",
+    "offline"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onLanguage:dot",
+    "onLanguage:markdown",
+    "onWebviewPanel:graphvizPreview.preview"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": true
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "dot",
+        "aliases": [
+          "Graphviz (DOT)",
+          "dot"
+        ],
+        "extensions": [
+          ".dot",
+          ".gv"
+        ],
+        "configuration": "./syntaxes/dot.language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "dot",
+        "scopeName": "source.dot",
+        "path": "./syntaxes/dot.tmLanguage.json"
+      },
+      {
+        "scopeName": "markdown.dot.codeblock",
+        "path": "./syntaxes/dot-markdown-injection.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.dot": "dot"
+        }
+      }
+    ],
+    "markdown.markdownItPlugins": true,
+    "markdown.previewStyles": [
+      "./media/markdown.css"
+    ],
+    "commands": [
+      {
+        "command": "graphvizPreview.showPreviewToSide",
+        "title": "Open Preview to the Side",
+        "category": "Graphviz",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "graphvizPreview.showPreview",
+        "title": "Open Preview",
+        "category": "Graphviz"
+      },
+      {
+        "command": "graphvizPreview.openWalkthrough",
+        "title": "Get Started",
+        "category": "Graphviz"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "graphvizPreview.showPreviewToSide",
+        "key": "ctrl+k v",
+        "mac": "cmd+k v",
+        "when": "editorLangId == dot"
+      },
+      {
+        "command": "graphvizPreview.showPreview",
+        "key": "ctrl+shift+v",
+        "mac": "cmd+shift+v",
+        "when": "editorLangId == dot"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "graphvizPreview.showPreviewToSide",
+          "when": "editorLangId == dot",
+          "group": "navigation"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "graphvizPreview.showPreviewToSide",
+          "when": "resourceExtname =~ /^\\.(dot|gv)$/i",
+          "group": "navigation@9"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "graphvizPreview.showPreviewToSide",
+          "when": "editorLangId == dot",
+          "group": "navigation@9"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "graphvizPreview.showPreviewToSide",
+          "when": "editorLangId == dot || editorLangId == markdown"
+        },
+        {
+          "command": "graphvizPreview.showPreview",
+          "when": "editorLangId == dot || editorLangId == markdown"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Graphviz Preview",
+      "properties": {
+        "graphvizPreview.defaultEngine": {
+          "type": "string",
+          "enum": ["auto", "dot", "neato", "fdp", "sfdp", "circo", "twopi"],
+          "default": "auto",
+          "description": "Layout engine for new previews. \"auto\" uses the layout= attribute of the graph, or dot. You can change it per preview from the toolbar."
+        },
+        "graphvizPreview.updateDelayMs": {
+          "type": "number",
+          "default": 300,
+          "minimum": 0,
+          "maximum": 5000,
+          "description": "How long to wait after you stop typing before the preview lays out the graph again."
+        },
+        "graphvizPreview.renderTimeoutSeconds": {
+          "type": "number",
+          "default": 15,
+          "minimum": 1,
+          "maximum": 300,
+          "description": "A layout that runs longer than this is stopped, and the preview says so. Layouts run in a separate thread, so VS Code stays responsive."
+        },
+        "graphvizPreview.maxSourceKB": {
+          "type": "number",
+          "default": 4096,
+          "minimum": 1,
+          "description": "Graphs larger than this are not laid out in the preview."
+        },
+        "graphvizPreview.theme": {
+          "type": "string",
+          "enum": ["auto", "light", "dark", "original"],
+          "enumDescriptions": [
+            "Follow the VS Code theme: in dark themes, default black lines and text use the editor colors.",
+            "Always black on white, like Graphviz.",
+            "Always use the editor colors for default black and white.",
+            "Exactly the Graphviz output on a white page."
+          ],
+          "default": "auto",
+          "description": "Colors of the preview. Colors set in the graph itself are always kept. Exports always use the original Graphviz colors."
+        },
+        "graphvizPreview.markdownPreview": {
+          "type": "boolean",
+          "default": true,
+          "description": "Draw ```dot, ```graphviz and ```gv code blocks as graphs in the built-in Markdown preview."
+        },
+        "graphvizPreview.markdownMaxBlockKB": {
+          "type": "number",
+          "default": 256,
+          "minimum": 1,
+          "description": "Dot blocks larger than this are not drawn in the Markdown preview."
+        },
+        "graphvizPreview.askForRating": {
+          "type": "boolean",
+          "default": true,
+          "description": "Ask one time for a Marketplace rating after you have used Graphviz Preview for a few days. You can answer \"Later\" or \"Don't ask again\". Nothing is sent anywhere."
+        }
+      }
+    },
+    "walkthroughs": [
+      {
+        "id": "graphvizPreview.start",
+        "title": "Get started with Graphviz Preview",
+        "description": "Preview DOT graphs beside your code, jump from a node to its line and export the drawing.",
+        "steps": [
+          {
+            "id": "open",
+            "title": "Open the preview",
+            "description": "Open a .dot or .gv file and click the preview icon in the editor title, or press Cmd+K V (Ctrl+K V).\n[Find a .dot file](command:workbench.action.quickOpen?%5B%22.dot%22%5D)",
+            "media": { "markdown": "walkthrough/open.md" },
+            "completionEvents": ["onCommand:graphvizPreview.showPreviewToSide"]
+          },
+          {
+            "id": "navigate",
+            "title": "Pan, zoom, find and jump",
+            "description": "Drag to pan, Cmd or Ctrl plus the mouse wheel to zoom. Type in Find node to light up matches. Click a node to put the cursor on its line.",
+            "media": { "markdown": "walkthrough/navigate.md" }
+          },
+          {
+            "id": "markdown",
+            "title": "Graphs in Markdown",
+            "description": "Write a fenced block with the language dot or graphviz. The built-in Markdown preview draws it, and the side preview can show any block of the file.",
+            "media": { "markdown": "walkthrough/markdown.md" }
+          },
+          {
+            "id": "settings",
+            "title": "Engine, colors and limits",
+            "description": "Pick the default layout engine, the color mode and the time limit for big graphs.\n[Open settings](command:workbench.action.openSettings?%5B%22graphvizPreview%22%5D)",
+            "media": { "markdown": "walkthrough/settings.md" },
+            "completionEvents": ["onCommand:workbench.action.openSettings"]
+          }
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "build": "node scripts/build.js --production",
+    "test": "node scripts/build.js --production && node --test \"test/*.test.js\"",
+    "samples": "node scripts/make-samples.js samples",
+    "package": "npm run build && npx -y @vscode/vsce package --no-dependencies -o dist/"
+  },
+  "devDependencies": {
+    "@viz-js/viz": "3.31.0",
+    "esbuild": "0.28.2"
+  },
+  "homepage": "https://github.com/theluckystrike/graphviz-preview-vscode#readme",
+  "bugs": {
+    "url": "https://github.com/theluckystrike/graphviz-preview-vscode/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/theluckystrike/graphviz-preview-vscode"
+  }
+}
