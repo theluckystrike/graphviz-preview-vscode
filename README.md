@@ -1,4 +1,4 @@
-# Graphviz Preview & DOT Viewer
+# Graphviz Viewer & DOT Viewer (Live Preview)
 
 ![License MIT](https://img.shields.io/badge/license-MIT-blue)
 ![Works offline](https://img.shields.io/badge/network-none-success)

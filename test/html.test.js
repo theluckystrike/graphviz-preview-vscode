@@ -38,7 +38,7 @@ test('manifest: id, engine, keywords, languages and Markdown plugin', () => {
   assert.equal(`${pkg.publisher}.${pkg.name}`, 'zovo.zovo-graphviz-preview');
   assert.match(pkg.version, /^\d+\.\d+\.\d+$/); // monetize.py rollouts bump it
   assert.equal(pkg.engines.vscode, '^1.90.0');
-  assert.ok(pkg.displayName.startsWith('Graphviz Preview') && pkg.displayName.length <= 45);
+  assert.ok(pkg.displayName.startsWith('Graphviz Viewer') && pkg.displayName.length <= 45);
   assert.equal(pkg.keywords.length, 30);
   assert.equal(new Set(pkg.keywords).size, 30);
   assert.deepEqual(pkg.contributes.languages[0].extensions, ['.dot', '.gv']);
