@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2 (2026-11-07)
+
+- "More free viewers" now starts with the Zovo extensions most related to this one. Picking one opens its Marketplace page, where you choose to install it.
+- The README has a "Support Zovo" section with GitHub Sponsors and the developer's GitHub profile, and "More tools by Zovo" lists related extensions.
+
 ## 0.1.1 (2026-11-06)
 
 - A thin line under the graph has two links, "Sponsor" (GitHub Sponsors) and "More free viewers". The new setting `graphvizPreview.showSupportLinks` (default `true`) hides it, and so does the "Hide" link next to them. The Markdown preview never shows it. There is no popup, and nothing is sent anywhere.
